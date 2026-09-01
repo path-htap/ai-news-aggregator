@@ -2,7 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { createHmac } from 'crypto';
 
-const DIR = 'D:\\app\\myfirstproject\\aizixun';
+// 用当前工作目录作为项目根，兼容本地与 GitHub Actions（云端的 cwd 即为 repo 根 /home/runner/work/.../ai-news-aggregator）
+const DIR = process.cwd();
 const WEBHOOK = process.env.FEISHU_WEBHOOK_URL || 'https://open.feishu.cn/open-apis/bot/v2/hook/c384f885-e3f2-4bf1-87cf-37e98dae9a84';
 const SECRET = process.env.FEISHU_WEBHOOK_SECRET || 'aYCj6hgcQRUaQUKz0jpPse';
 const DRY = process.env.DRY_RUN !== '0';   // default dry-run

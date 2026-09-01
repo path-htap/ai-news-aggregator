@@ -3,7 +3,8 @@ name: Update AI News Snapshot
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 */2 * * *"
+    # 22:00 UTC = 06:00 Beijing (Asia/Shanghai)
+    - cron: "0 22 * * *"
 
 permissions:
   contents: write
@@ -60,6 +61,14 @@ jobs:
             git commit -m "chore: update ai news snapshot"
             git push
           fi
+
+      - name: Push to Feishu bot
+        env:
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          FEISHU_WEBHOOK_SECRET: ${{ secrets.FEISHU_WEBHOOK_SECRET }}
+          DRY_RUN: "0"
+        run: |
+          node scripts/push-feishu.mjs
 
       - name: Generate OPML JSON
         run: npx tsx src/generate-opml-json.ts

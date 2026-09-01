@@ -8,11 +8,9 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
-  group: "pages"
+  group: "ai-news"
   cancel-in-progress: false
 
 jobs:
@@ -69,38 +67,3 @@ jobs:
           DRY_RUN: "0"
         run: |
           node scripts/push-feishu.mjs
-
-      - name: Generate OPML JSON
-        run: npx tsx src/generate-opml-json.ts
-
-      - name: Build web
-        env:
-          GITHUB_PAGES: true
-        run: |
-          cd web
-          pnpm install
-          pnpm run build
-          mkdir -p dist/data
-          cp ../data/latest-24h.json dist/data/
-          cp ../data/latest-7d.json dist/data/
-          cp ../data/source-status.json dist/data/
-          cp ../data/opml-feeds.json dist/data/ 2>/dev/null || true
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./web/dist
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: update
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4

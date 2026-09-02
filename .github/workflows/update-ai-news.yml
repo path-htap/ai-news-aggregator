@@ -60,6 +60,13 @@ jobs:
             git push
           fi
 
+      - name: Generate AI digest (GLM)
+        env:
+          GLM_API_KEY: ${{ secrets.GLM_API_KEY }}
+          TOP_N: "20"
+        run: |
+          node scripts/generate-digest.mjs
+
       - name: Push to Feishu bot
         env:
           FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
